@@ -338,7 +338,7 @@ export default {
     const normalizedPath = pathname === '/' ? '/' : pathname.replace(/\/$/, '');
     
     // Homepage
-    if (normalizedPath === '') {
+    if (normalizedPath === '/' || normalizedPath === '') {
       return new Response(getHomePage(), {
         headers: { 'Content-Type': 'text/html' }
       });
