@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Example Electric Company",
+    "phone": "(503) 555-0123",
+    "email": "info@example-electric.com",
+    "website": "www.example-electric.com",
+    "address": {
+      "street": "123 Main Street",
+      "city": "Portland",
+      "state": "OR",
+      "zipCode": "97205"
+    },
+    "industry": "electricians",
+    "services": [
+      "Residential Electrical",
+      "Commercial Electrical",
+      "Emergency Repairs"
+    ],
+    "licenseNumber": "123456",
+    "yearsInBusiness": 15,
+    "emergencyService": true,
+    "hours": "Mon-Fri: 7AM-5PM",
+    "specialties": [
+      "Smart Home Systems",
+      "Panel Upgrades"
+    ],
+    "bbbRating": "A+",
+    "rating": 4.8,
+    "reviewCount": 47,
+    "featured": false
+  }
+]

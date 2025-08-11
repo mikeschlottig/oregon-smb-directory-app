@@ -1,0 +1,46 @@
+{
+  "timestamp": "2025-08-11T04:20:19.748Z",
+  "summary": {
+    "total": 8,
+    "valid": 8,
+    "invalid": 0,
+    "duplicates": 1,
+    "warnings": [
+      {
+        "business": "Duplicate Test Electric - Portland",
+        "issues": [
+          "Potential duplicate of: Pacific Northwest Electric"
+        ]
+      }
+    ]
+  },
+  "businessDistribution": {
+    "portland": {
+      "electricians": 1,
+      "plumbers": 1
+    },
+    "medford": {
+      "roofers": 1
+    },
+    "salem": {
+      "lawfirms": 1
+    },
+    "eugene": {
+      "general": 1
+    },
+    "grants pass": {
+      "real": 1
+    },
+    "roseburg": {
+      "electricians": 1
+    }
+  },
+  "detailedWarnings": [
+    {
+      "business": "Duplicate Test Electric - Portland",
+      "issues": [
+        "Potential duplicate of: Pacific Northwest Electric"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+name = "oregon-smb-test"
+main = "worker.js"
+compatibility_date = "2024-10-07"
+compatibility_flags = ["nodejs_compat"]
+
+# Development environment
+[env.development]
+name = "oregon-smb-test-dev"
+
+# Production environment  
+[env.production]
+name = "oregon-smb-test-prod"

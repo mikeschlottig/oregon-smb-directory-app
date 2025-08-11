@@ -1,0 +1,42 @@
+Oregon SMB Directory - Data Sealing Report
+Generated: 8/10/2025, 9:20:19 PM
+
+📊 VALIDATION SUMMARY
+=====================
+Total Records Processed: 8
+Valid Records: 8
+Invalid Records: 0
+Duplicates Removed: 1
+Warnings: 1
+
+📍 BUSINESS DISTRIBUTION
+=======================
+Grants Pass:
+  Total: 0
+
+Medford:
+  roofers: 1
+  Total: 1
+
+Roseburg:
+  electricians: 1
+  Total: 1
+
+Eugene:
+  general contractors: 1
+  Total: 1
+
+Salem:
+  lawfirms: 1
+  Total: 1
+
+Portland:
+  plumbers: 1
+  electricians: 1
+  Total: 2
+
+⚠️  WARNINGS
+============
+Duplicate Test Electric - Portland:
+  - Potential duplicate of: Pacific Northwest Electric
+

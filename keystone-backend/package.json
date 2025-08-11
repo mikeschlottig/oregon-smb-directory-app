@@ -1,0 +1,35 @@
+{
+  "name": "oregon-smb-keystone-backend",
+  "version": "1.0.0",
+  "description": "Keystone JS backend for Oregon SMB Directory - Enterprise business directory management",
+  "main": "keystone.ts",
+  "scripts": {
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build",
+    "postinstall": "keystone postinstall",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "keystone",
+    "cms",
+    "oregon",
+    "business-directory",
+    "graphql",
+    "enterprise"
+  ],
+  "author": "LEVERAGEAI LLC",
+  "license": "MIT",
+  "dependencies": {
+    "@keystone-6/auth": "^8.1.0",
+    "@keystone-6/core": "^6.5.1",
+    "@keystone-6/fields-document": "^9.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.2.1",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

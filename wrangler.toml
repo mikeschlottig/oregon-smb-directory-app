@@ -1,0 +1,10 @@
+name = "oregon-smb-directory"
+main = "src/index.ts"
+compatibility_date = "2024-10-07"
+
+[env.production]
+name = "oregon-smb-directory-prod"
+routes = [
+  { pattern = "oregonsmbdirectory.com/*", zone_name = "oregonsmbdirectory.com" },
+  { pattern = "www.oregonsmbdirectory.com/*", zone_name = "oregonsmbdirectory.com" }
+]

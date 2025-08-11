@@ -1,0 +1,204 @@
+[
+  {
+    "name": "Pacific Northwest Electric",
+    "phone": "503-555-0101", 
+    "email": "info@pnwelectric.com",
+    "website": "www.pnwelectric.com",
+    "address": {
+      "street": "1234 SW Broadway",
+      "city": "Portland",
+      "state": "OR",
+      "zipCode": "97205"
+    },
+    "industry": "electricians",
+    "services": [
+      "Residential Electrical",
+      "Commercial Electrical",
+      "Smart Home Installation",
+      "Panel Upgrades"
+    ],
+    "licenseNumber": "EL12345",
+    "yearsInBusiness": 22,
+    "emergencyService": true,
+    "hours": "Mon-Fri: 7AM-6PM, Sat: 8AM-4PM",
+    "specialties": ["Tesla Charger Installation", "Solar Panel Wiring"],
+    "bbbRating": "A+",
+    "rating": 4.9,
+    "reviewCount": 87,
+    "featured": true
+  },
+  {
+    "name": "Rose City Plumbing Services",
+    "phone": "(503) 555-0202",
+    "email": "service@rosecityplumbing.com", 
+    "website": "https://rosecityplumbing.com",
+    "address": {
+      "street": "4567 NE Sandy Blvd",
+      "city": "Portland",
+      "state": "OR",
+      "zipCode": "97232"
+    },
+    "industry": "plumbers",
+    "services": [
+      "Emergency Plumbing",
+      "Water Heater Repair",
+      "Drain Cleaning",
+      "Pipe Replacement"
+    ],
+    "licenseNumber": "PL67890",
+    "yearsInBusiness": 15,
+    "emergencyService": true,
+    "hours": "24/7 Emergency Service",
+    "specialties": ["Tankless Water Heaters", "Sewer Line Repair"],
+    "bbbRating": "A",
+    "rating": 4.7,
+    "reviewCount": 134
+  },
+  {
+    "name": "Medford Premier Roofing",
+    "phone": "541-555-0303",
+    "website": "medfordroofing.com",
+    "address": {
+      "street": "890 Crater Lake Ave",
+      "city": "Medford",
+      "state": "OR",
+      "zipCode": "97504"
+    },
+    "industry": "roofers",
+    "services": [
+      "Residential Roofing",
+      "Commercial Roofing", 
+      "Roof Repair",
+      "Gutter Installation"
+    ],
+    "licenseNumber": "RF45678",
+    "yearsInBusiness": 28,
+    "emergencyService": true,
+    "hours": "Mon-Fri: 7AM-5PM",
+    "specialties": ["Metal Roofing", "Emergency Storm Repair"],
+    "rating": 4.8,
+    "reviewCount": 76
+  },
+  {
+    "name": "Salem Law Group LLC",
+    "phone": "(503) 555-0404",
+    "email": "contact@salemlawgroup.com",
+    "website": "https://www.salemlawgroup.com",
+    "address": {
+      "street": "123 State Street",
+      "city": "Salem", 
+      "state": "OR",
+      "zipCode": "97301"
+    },
+    "industry": "lawfirms",
+    "services": [
+      "Personal Injury Law",
+      "Family Law",
+      "Criminal Defense",
+      "Business Law"
+    ],
+    "licenseNumber": "LW98765",
+    "yearsInBusiness": 12,
+    "emergencyService": false,
+    "hours": "Mon-Fri: 8AM-5PM",
+    "specialties": ["DUI Defense", "Divorce Mediation"],
+    "bbbRating": "A+",
+    "rating": 4.6,
+    "reviewCount": 45,
+    "featured": true
+  },
+  {
+    "name": "Eugene Home Builders",
+    "phone": "541-555-0505",
+    "email": "info@eugenehomebuilders.com",
+    "website": "eugenehomebuilders.com",
+    "address": {
+      "street": "456 Willamette Street",
+      "city": "Eugene",
+      "state": "OR", 
+      "zipCode": "97401"
+    },
+    "industry": "general-contractors",
+    "services": [
+      "New Construction",
+      "Home Renovations",
+      "Kitchen Remodeling",
+      "Bathroom Remodeling"
+    ],
+    "licenseNumber": "GC24680",
+    "yearsInBusiness": 35,
+    "emergencyService": false,
+    "hours": "Mon-Fri: 7AM-4PM",
+    "specialties": ["Sustainable Building", "Custom Homes"],
+    "bbbRating": "A",
+    "rating": 4.9,
+    "reviewCount": 92
+  },
+  {
+    "name": "Grants Pass Real Estate Solutions",
+    "phone": "(541) 555-0606",
+    "email": "info@gpre.com",
+    "website": "https://grantspassrealty.com",
+    "address": {
+      "street": "789 Rogue River Highway",
+      "city": "Grants Pass",
+      "state": "OR",
+      "zipCode": "97526"
+    },
+    "industry": "real-estate",
+    "services": [
+      "Residential Sales",
+      "Commercial Real Estate",
+      "Property Management",
+      "Investment Properties"
+    ],
+    "yearsInBusiness": 18,
+    "emergencyService": false,
+    "hours": "Mon-Sat: 9AM-6PM",
+    "specialties": ["Rural Properties", "River Front Homes"],
+    "rating": 4.5,
+    "reviewCount": 67
+  },
+  {
+    "name": "Roseburg Electric Works",
+    "phone": "541-555-0707",
+    "website": "roseburgelelectric.com",
+    "address": {
+      "street": "321 NE Garden Valley Blvd",
+      "city": "Roseburg",
+      "state": "OR",
+      "zipCode": "97470"
+    },
+    "industry": "electricians",
+    "services": [
+      "Residential Wiring",
+      "Commercial Electrical",
+      "Generator Installation",
+      "Electrical Troubleshooting"
+    ],
+    "licenseNumber": "EL13579",
+    "yearsInBusiness": 8,
+    "emergencyService": true,
+    "hours": "Mon-Fri: 8AM-5PM",
+    "specialties": ["Backup Generators", "Outdoor Lighting"],
+    "rating": 4.3,
+    "reviewCount": 29
+  },
+  {
+    "name": "Duplicate Test Electric - Portland",
+    "phone": "503-555-0101",
+    "email": "duplicate@test.com",
+    "website": "www.duplicate-test.com",
+    "address": {
+      "street": "Different Address",
+      "city": "Portland",
+      "state": "OR",
+      "zipCode": "97210"
+    },
+    "industry": "electricians",
+    "services": ["Basic Electrical"],
+    "yearsInBusiness": 5,
+    "emergencyService": false,
+    "hours": "Mon-Fri: 9AM-5PM"
+  }
+]
