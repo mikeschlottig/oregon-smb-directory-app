@@ -3,83 +3,21 @@
  * Dynamic business directory for I-5 corridor
  */
 
+import { getBusinessesByCity, type Business } from '../lib/data/businesses';
+import { INDUSTRIES } from '../lib/data/industries';
+import { CITIES } from '../lib/data/cities';
+
 export interface Env {
   // Define your bindings here
   // KV_BINDING?: KVNamespace;
   // D1_DATABASE?: D1Database;
 }
 
-// City data
-const CITIES = [
-  { slug: 'portland', name: 'Portland', county: 'Multnomah' },
-  { slug: 'salem', name: 'Salem', county: 'Marion' },
-  { slug: 'eugene', name: 'Eugene', county: 'Lane' },
-  { slug: 'medford', name: 'Medford', county: 'Jackson' },
-  { slug: 'grants-pass', name: 'Grants Pass', county: 'Josephine' }
-];
+// City data is now imported from lib/data/cities.ts
 
-// Industry data
-const INDUSTRIES = [
-  { slug: 'electricians', name: 'Electricians', icon: '⚡' },
-  { slug: 'plumbers', name: 'Plumbers', icon: '🔧' },
-  { slug: 'hvac', name: 'HVAC', icon: '🌡️' },
-  { slug: 'contractors', name: 'Contractors', icon: '🏗️' },
-  { slug: 'restaurants', name: 'Restaurants', icon: '🍽️' },
-  { slug: 'dentists', name: 'Dentists', icon: '🦷' }
-];
+// Industry data is now imported from lib/data/industries.ts
 
-// Sample Portland Electricians data
-const PORTLAND_ELECTRICIANS = [
-  {
-    id: 'abc-electric-portland',
-    name: 'ABC Electric Company',
-    trade: 'Electrician',
-    phone: '(503) 555-0123',
-    website: 'www.abcelectric.com',
-    address: '123 NW Industrial Way, Portland, OR 97210',
-    services: ['Residential Electrical', 'Commercial Electrical', 'Emergency Repairs', 'Panel Upgrades', 'LED Lighting', 'Smart Home Systems'],
-    hours: 'Mon-Fri: 7AM-5PM',
-    rating: 4.8,
-    reviewCount: 47,
-    licenseNumber: '123456',
-    yearsInBusiness: 15,
-    verified: true,
-    emergencyService: true,
-    bbbRating: 'A+'
-  },
-  {
-    id: 'portland-power-pros',
-    name: 'Portland Power Pros',
-    trade: 'Electrician',
-    phone: '(503) 555-0234',
-    website: 'www.portlandpowerpros.com',
-    address: '456 SE Division St, Portland, OR 97202',
-    services: ['Electrical Installations', 'Wiring Services', 'Generator Installation', 'EV Charger Installation', 'Electrical Inspections'],
-    hours: 'Mon-Sat: 6AM-6PM',
-    rating: 4.9,
-    reviewCount: 89,
-    licenseNumber: '234567',
-    yearsInBusiness: 22,
-    verified: true,
-    emergencyService: true,
-    featured: true
-  },
-  {
-    id: 'citywide-electric-portland',
-    name: 'Citywide Electric Services',
-    trade: 'Electrician',
-    phone: '(503) 555-0345',
-    address: '789 NE Sandy Blvd, Portland, OR 97232',
-    services: ['Residential Rewiring', 'Commercial Electrical', 'Troubleshooting', 'Outlet Installation', 'Ceiling Fan Installation'],
-    hours: '24/7 Emergency Service',
-    rating: 4.6,
-    reviewCount: 34,
-    licenseNumber: '345678',
-    yearsInBusiness: 8,
-    verified: true,
-    emergencyService: true
-  }
-];
+// Business data is now imported from lib/data/businesses.ts
 
 function getHomePage(): string {
   return `<!DOCTYPE html>
@@ -289,9 +227,9 @@ function getIndustryPage(city: any, industry: any, businesses: any[]): string {
                         <div class="card-body">
                             <div style="margin-bottom: 1rem;">
                                 <p><strong>📞</strong> ${business.phone}</p>
-                                <p><strong>📍</strong> ${business.address}</p>
+                                <p><strong>📍</strong> ${typeof business.address === 'string' ? business.address : `${business.address.street}, ${business.address.city}, ${business.address.state} ${business.address.zipCode}`}</p>
                                 ${business.hours ? `<p><strong>🕒</strong> ${business.hours}</p>` : ''}
-                                ${business.website ? `<p><strong>🌐</strong> <a href="https://${business.website}" target="_blank">${business.website}</a></p>` : ''}
+                                ${business.website ? `<p><strong>🌐</strong> <a href="${business.website.startsWith('http') ? business.website : 'https://' + business.website}" target="_blank">${business.website}</a></p>` : ''}
                             </div>
                             
                             <h4>Services Offered</h4>
@@ -310,7 +248,7 @@ function getIndustryPage(city: any, industry: any, businesses: any[]): string {
                             
                             <div class="actions">
                                 <a href="tel:${business.phone}" class="btn btn-primary">Call Now</a>
-                                <a href="https://maps.google.com/maps?q=${encodeURIComponent(business.address)}" target="_blank" class="btn btn-secondary">Get Directions</a>
+                                <a href="https://maps.google.com/maps?q=${encodeURIComponent(typeof business.address === 'string' ? business.address : `${business.address.street}, ${business.address.city}, ${business.address.state} ${business.address.zipCode}`)}" target="_blank" class="btn btn-secondary">Get Directions</a>
                             </div>
                         </div>
                     </div>
@@ -367,10 +305,7 @@ export default {
       
       if (city && industry) {
         // Get businesses for this city/industry combination
-        let businesses: any[] = [];
-        if (citySlug === 'portland' && industrySlug === 'electricians') {
-          businesses = PORTLAND_ELECTRICIANS;
-        }
+        const businesses = await getBusinessesByCity(citySlug, industrySlug);
         
         return new Response(getIndustryPage(city, industry, businesses), {
           headers: { 'Content-Type': 'text/html' }
