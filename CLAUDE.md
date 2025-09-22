@@ -1,77 +1,50 @@
-# CLAUDE.md - Oregon SMB Directory Project
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-Complete Oregon Small Business Directory covering the I-5 corridor from Portland to Ashland with real, verified business listings.
+Oregon SMB Directory - A dual-architecture business directory covering the I-5 corridor from Portland to Ashland. The project maintains both a Next.js static site and a Cloudflare Worker implementation, with the Worker currently being the active deployment.
 
-## Critical Requirements
-- **NO SAMPLE DATA** - All business listings must be real, verified businesses
-- Real contact information, addresses, phone numbers
-- Verified licensing and business credentials
-- Actual service offerings and specialties
+## Architecture
 
-## Data Structure Requirements
+### Dual Deployment System
+- **Primary**: Cloudflare Worker (`src/index.ts`) - Production deployment
+- **Secondary**: Next.js App Router (`app/`) - Static site fallback option
+- **Database**: Cloudflare D1 with full business data (2,482+ businesses)
+- **Data Sources**: Large dataset in `raw-business-data/businesses.json`, minimal subset in `lib/data/businesses.ts`
 
-### Cities (6 Required)
-- Grants Pass
-- Medford  
-- Roseburg
-- Eugene
-- Salem
-- Portland
+### Key Architectural Decisions
+- Worker uses TypeScript with D1 database for dynamic business listings
+- Next.js configured for static export (`output: 'export'`) with Cloudflare Pages compatibility
+- Database-first approach with businesses stored in D1, queried dynamically
+- Blog system integrated into Worker with full CMS capabilities
 
-### Industries (6 Required)
-- Lawfirms
-- Roofers
-- Real Estate
-- General Contractors  
-- Plumbers
-- Electricians
+## Development Commands
 
-## Business Data Fields (ALL REQUIRED)
-```typescript
-interface Business {
-  id: string;
-  name: string;          // REAL business name
-  phone: string;         // REAL phone number
-  website?: string;      // REAL website URL
-  email?: string;        // REAL email address
-  address: {
-    street: string;      // REAL street address
-    city: string;        // Must match one of 6 cities
-    state: 'OR';         // Oregon only
-    zipCode: string;     // REAL zip code
-  };
-  services: string[];    // REAL services offered
-  licenseNumber?: string; // REAL license if applicable
-  yearsInBusiness?: number; // ACTUAL years
-  verified: boolean;     // Must verify each business
-  rating?: number;       // Real customer ratings
-  reviewCount?: number;  // Actual review count
-}
+### Cloudflare Worker (Primary)
+```bash
+# Local development
+wrangler dev
+
+# Deploy to development
+wrangler deploy
+
+# Deploy to production
+wrangler deploy --env production
+
+# View production logs
+wrangler tail --env production
+
+# Generate TypeScript bindings
+wrangler types
 ```
 
-## Data Sources to Use
-1. **Oregon Secretary of State Business Registry**
-2. **Oregon Construction Contractors Board (CCB)**
-3. **Oregon State Bar for Legal Services**
-4. **Local Chamber of Commerce listings**
-5. **Google Business listings with verification**
-6. **Yelp business data**
-7. **Yellow Pages verified listings**
-
-## Quality Assurance Requirements
-- Verify each business exists and is operational
-- Confirm phone numbers are current
-- Validate addresses through mapping services
-- Check business licenses where applicable
-- Ensure no duplicate listings
-
-## Deployment Commands
+### Next.js Application (Secondary)
 ```bash
-# Development
+# Development server
 npm run dev
 
-# Build for production
+# Build static site
 npm run build
 
 # Deploy to Cloudflare Pages
@@ -79,41 +52,138 @@ npm run deploy
 
 # Type checking
 npm run type-check
+
+# Linting
+npm run lint
 ```
+
+### Database Operations
+```bash
+# Create D1 database tables
+wrangler d1 execute oregon-smb-directory --file=schema.sql
+
+# Import business data
+node import-data.js
+
+# Query database
+wrangler d1 execute oregon-smb-directory --command="SELECT COUNT(*) FROM businesses"
+```
+
+## Critical Data Integration Issue
+
+### Current State
+- **Available Data**: 2,482 businesses in `raw-business-data/businesses.json`
+- **Currently Used**: 8 businesses in `lib/data/businesses.ts`
+- **Database Schema**: Ready for full dataset in D1 (`schema.sql`)
+- **Import Script**: Available (`import-data.js`)
+
+### Required Integration
+The Worker is designed to use D1 database but may fall back to TypeScript data. Full data integration requires:
+1. Import all 2,482 businesses into D1 database
+2. Verify D1 queries are working in Worker
+3. Ensure 30+ listings per industry per city requirement is met
 
 ## File Structure
+
+### Core Application Files
+- `src/index.ts` - Cloudflare Worker (primary implementation)
+- `wrangler.toml` - Worker configuration with D1 bindings
+- `schema.sql` - D1 database schema for businesses and blog posts
+- `import-data.js` - Script to import business data into D1
+
+### Data Management
+- `lib/data/cities.ts` - City definitions (6 cities)
+- `lib/data/industries.ts` - Industry categories (6 industries)
+- `lib/data/businesses.ts` - Minimal business subset (8 businesses)
+- `raw-business-data/businesses.json` - Complete dataset (2,482 businesses)
+
+### Next.js Application (Fallback)
+- `app/` - Next.js App Router pages
+- `components/` - React components
+- `next.config.mjs` - Static export configuration
+
+## Key Features
+
+### Business Directory
+- **6 Cities**: Portland, Salem, Eugene, Medford, Grants Pass, Roseburg
+- **6 Industries**: Electricians, Plumbers, Roofers, General Contractors, Lawyers, Real Estate
+- **Dynamic Routing**: `/{city}/{industry}` pattern
+- **Database Integration**: D1 queries with fallback to TypeScript data
+
+### Blog System
+- **Admin Interface**: `/admin` (password: admin123)
+- **Content Management**: Full CRUD operations for blog posts
+- **SEO Features**: Meta tags, slugs, published/draft status
+- **API Endpoints**: `/admin/save-post` for content management
+
+### Worker-Specific Features
+- **D1 Integration**: `getBusinessesFromD1()` for database queries
+- **Blog Management**: `getBlogPosts()`, `saveBlogPost()` functions
+- **Error Handling**: Database fallbacks and proper error responses
+- **Environment Bindings**: D1 database binding configured in `wrangler.toml`
+
+## Database Schema
+
+### Businesses Table
+```sql
+- id (PRIMARY KEY)
+- name, city, industry
+- services (JSON array as text)
+- verified, website, phone, address, email
+- rating, reviewCount, yearsInBusiness
+- licenseNumber, bbbRating, emergencyService
 ```
-/oregon-smb-directory-app/
-├── app/                    # Next.js app router pages
-├── components/             # React components
-├── lib/data/              # Data management (REAL DATA ONLY)
-│   ├── businesses.ts      # Real business listings
-│   ├── cities.ts          # City configurations
-│   └── industries.ts      # Industry definitions
-└── CLAUDE.md              # This file
+
+### Blog Posts Table
+```sql
+- id, title, slug, content, excerpt
+- status (published/draft)
+- meta_title, meta_description, tags
+- created_at, updated_at, published_at
 ```
 
-## Admin Panel
-- URL: `/admin`
-- Password: admin123 (CHANGE FOR PRODUCTION)
-- Features: Blog management, comment moderation
+## Configuration Files
 
-## Blog System
-- Industry-focused content
-- Comment system with moderation
-- SEO optimized articles
+### Worker Configuration (`wrangler.toml`)
+- **D1 Binding**: `oregon-smb-directory` database
+- **Production Routes**: Custom domain mapping
+- **Environment Variables**: Production/development separation
 
-## SEO Requirements Met
-- Server-side rendering
-- Static generation for all pages
-- Modal content pre-rendered in DOM for crawlers
-- Structured data for business listings
-- Meta tags for all pages
+### Next.js Configuration (`next.config.mjs`)
+- **Static Export**: Configured for Cloudflare Pages
+- **Image Optimization**: Disabled for static compatibility
+- **Trailing Slash**: Enabled for consistent routing
 
-## Next Phase: Real Data Integration
-🚨 **CRITICAL**: Replace ALL sample data with verified, real Oregon businesses across specified cities and industries.
+## Testing and Quality Assurance
 
-## Contact for Real Data Needs
-- Use data-gathering specialists
-- Verify business information accuracy
-- Ensure compliance with business listing standards
+### Before Deployment
+1. Test homepage routing (both `/` and `` paths)
+2. Verify city pages load correctly
+3. Check industry pages show proper business counts
+4. Test D1 database connectivity
+5. Validate mobile responsiveness (375px minimum)
+6. Confirm blog admin functionality
+
+### Common Issues
+- **Homepage 404**: Check both `normalizedPath === '/'` and `normalizedPath === ''`
+- **Empty Business Lists**: Verify D1 data import and database queries
+- **Admin Access**: Default password is `admin123` (change for production)
+- **Database Errors**: Check D1 binding configuration in `wrangler.toml`
+
+## Performance Considerations
+- **D1 Queries**: Limited to 50 businesses per request with proper indexing
+- **Static Fallback**: Next.js build generates all city/industry combinations
+- **Caching**: Worker responses cacheable, database queries optimized
+- **Error Boundaries**: Graceful degradation when database unavailable
+
+## Security Notes
+- **Blog Admin**: Password-protected admin interface
+- **Database**: Parameterized queries prevent SQL injection
+- **CORS**: Configured for static site compatibility
+- **Input Validation**: All user inputs sanitized and validated
+
+## Dependencies
+- **Runtime**: Node.js 18.17.0+
+- **Cloudflare**: Wrangler 3.0+, D1 database
+- **Next.js**: Version 15.4.6 with TypeScript
+- **UI**: Tailwind CSS, Lucide React icons

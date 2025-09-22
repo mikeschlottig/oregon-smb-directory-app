@@ -2,9 +2,29 @@ name = "oregon-smb-directory"
 main = "src/index.ts"
 compatibility_date = "2024-10-07"
 
+# Development environment (uses remote database by default)
+[env.dev]
+name = "oregon-smb-directory-dev"
+
+[[env.dev.d1_databases]]
+binding = "DB"
+database_name = "oregon-smb-directory"
+database_id = "7fc369ad-7c69-4a2d-b5e0-825535c6a094"
+
+# Default configuration (for local development when needed)
+[[d1_databases]]
+binding = "DB"
+database_name = "oregon-smb-directory"
+database_id = "7fc369ad-7c69-4a2d-b5e0-825535c6a094"
+
 [env.production]
 name = "oregon-smb-directory-prod"
 routes = [
   { pattern = "oregonsmbdirectory.com/*", zone_name = "oregonsmbdirectory.com" },
   { pattern = "www.oregonsmbdirectory.com/*", zone_name = "oregonsmbdirectory.com" }
 ]
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "oregon-smb-directory"
+database_id = "7fc369ad-7c69-4a2d-b5e0-825535c6a094"

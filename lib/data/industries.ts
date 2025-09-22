@@ -76,6 +76,39 @@ export const INDUSTRIES: Industry[] = [
     primaryDriver: 'leads',
     color: 'yellow',
     features: ['emergency-service', 'license-verification', 'lead-generation']
+  },
+  {
+    id: 'property-management',
+    name: 'Property Management and Rentals',
+    slug: 'property-management',
+    icon: '🏘️',
+    tier: 1,
+    leadValue: 'high',
+    primaryDriver: 'portfolio',
+    color: 'purple',
+    features: ['property-listings', 'rental-management', 'tenant-screening']
+  },
+  {
+    id: 'hotels',
+    name: 'Hotels',
+    slug: 'hotels',
+    icon: '🏨',
+    tier: 2,
+    leadValue: 'medium',
+    primaryDriver: 'reviews',
+    color: 'indigo',
+    features: ['booking-integration', 'amenity-listings', 'photo-gallery']
+  },
+  {
+    id: 'day-spa',
+    name: 'Day Spa',
+    slug: 'day-spa',
+    icon: '🧘',
+    tier: 2,
+    leadValue: 'medium',
+    primaryDriver: 'reviews',
+    color: 'pink',
+    features: ['service-booking', 'treatment-menu', 'wellness-profiles']
   }
 ];
 

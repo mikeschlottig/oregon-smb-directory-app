@@ -3,12 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "./dev-remote.sh",
+    "dev:local": "wrangler dev",
+    "build": "tsc",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "deploy": "npm run build && wrangler pages deploy out"
+    "deploy": "wrangler deploy",
+    "deploy:prod": "wrangler deploy --env production",
+    "db:remote": "wrangler d1 execute oregon-smb-directory --remote",
+    "db:local": "wrangler d1 execute oregon-smb-directory",
+    "db:backup": "wrangler d1 export oregon-smb-directory --remote"
   },
   "dependencies": {
     "@types/node": "^20",

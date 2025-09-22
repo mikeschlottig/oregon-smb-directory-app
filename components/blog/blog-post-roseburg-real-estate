@@ -1,0 +1,154 @@
+export default function RoseburgRealEstateBlog() {
+  return (
+    <article className="max-w-4xl mx-auto px-6 py-12 bg-white">
+      {/* Header */}
+      <header className="mb-12 text-center">
+        <div className="inline-block bg-gradient-to-r from-emerald-600 to-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4">
+          Market Analysis
+        </div>
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+          The Great Roseburg Real Estate Recalibration
+        </h1>
+        <p className="text-xl text-gray-600 mb-6">
+          How a Small Oregon Town Became a Case Study in Post-Pandemic Market Physics
+        </p>
+        <div className="flex items-center justify-center space-x-4 text-gray-500">
+          <span>September 15, 2025</span>
+          <span>•</span>
+          <span>Douglas County Market Report</span>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="prose prose-lg max-w-none">
+        {/* Opening Scene */}
+        <div className="bg-gray-50 p-8 rounded-lg mb-8 border-l-4 border-emerald-500">
+          <p className="text-lg italic text-gray-700 mb-0">
+            "In the summer of 2022, you could throw a dart at a map of Roseburg and whatever house it landed on would sell in 48 hours, probably for twenty percent over asking. By September 2025, that same dart might stick in a house that's been sitting on the market for two months, priced exactly where the seller thinks it should be, waiting for a buyer who's doing math that didn't exist three years ago."
+          </p>
+        </div>
+
+        <p className="text-lg leading-relaxed">
+          There's something almost poetic about watching a housing market come back to earth. Not the crash-and-burn poetry of 2008, but the quieter verse of a market that got drunk on cheap money and pandemic migration, and is now nursing a hangover while trying to remember how normal markets are supposed to work.
+        </p>
+
+        <p>
+          Roseburg, Oregon—population 23,000, nestled in the Umpqua Valley between Portland and the California border—has become an unlikely laboratory for this particular experiment in market physics. What happened here between 2020 and 2025 tells a story that's part economics textbook, part human drama, and part cautionary tale about what happens when a sleepy timber town suddenly finds itself in the crosshairs of the American housing crisis.
+        </p>
+
+        {/* The Numbers Section */}
+        <div className="bg-gradient-to-r from-blue-50 to-emerald-50 p-8 rounded-lg my-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">The Numbers Don't Lie (But They Do Tell Stories)</h2>
+          
+          <div className="grid md:grid-cols-3 gap-6 mb-6">
+            <div className="text-center p-4 bg-white rounded-lg shadow-sm">
+              <div className="text-3xl font-bold text-emerald-600">3-4</div>
+              <div className="text-sm text-gray-600">Months of Inventory</div>
+              <div className="text-xs text-gray-500 mt-1">(vs. sub-2 at peak)</div>
+            </div>
+            <div className="text-center p-4 bg-white rounded-lg shadow-sm">
+              <div className="text-3xl font-bold text-blue-600">~0%</div>
+              <div className="text-sm text-gray-600">Price Growth YoY</div>
+              <div className="text-xs text-gray-500 mt-1">(after 2020-22 surge)</div>
+            </div>
+            <div className="text-center p-4 bg-white rounded-lg shadow-sm">
+              <div className="text-3xl font-bold text-orange-600">7%+</div>
+              <div className="text-sm text-gray-600">Mortgage Rates</div>
+              <div className="text-xs text-gray-500 mt-1">(vs. 3% in 2021)</div>
+            </div>
+          </div>
+
+          <p className="text-gray-700">
+            <strong>Translation:</strong> The market that once moved like a caffeinated day-trader now moves like a tenured economics professor—deliberately, thoughtfully, and with considerably less drama.
+          </p>
+        </div>
+
+        <h2 className="text-3xl font-bold text-gray-900 mt-12 mb-6">The Characters in This Economic Drama</h2>
+
+        <p>
+          Every market story has its cast of characters, and Roseburg's housing market circa 2025 reads like a small-town novel with big-city implications.
+        </p>
+
+        <h3 className="text-xl font-semibold text-gray-800 mt-8 mb-4">The Refugees from Expensive Places</h3>
+        <p>
+          They started arriving in 2020—tech workers from Portland, retirees from California, remote workers from Seattle who suddenly realized they could trade a $800,000 starter home in the city for a $400,000 house with actual yard space in Roseburg. These "lifestyle buyers," as the market report euphemistically calls them, drove the initial surge. They're still coming, but now they're doing the math on 7.5% mortgage rates instead of 3%, and that math changes everything.
+        </p>
+
+        <h3 className="text-xl font-semibold text-gray-800 mt-8 mb-4">The Local First-Time Buyers</h3>
+        <p>
+          These are the heroes and victims of our story, often simultaneously. Local wages haven't kept pace with housing costs—a nurse or teacher in Roseburg makes roughly the same as they did in 2019, but houses cost 40-50% more. They're increasingly using down-payment assistance programs, a detail that sounds bureaucratic but represents thousands of personal dreams deferred, recalculated, and sometimes abandoned.
+        </p>
+
+        <h3 className="text-xl font-semibold text-gray-800 mt-8 mb-4">The Landlords Discovering Gravity</h3>
+        <p>
+          Perhaps the most interesting subplot involves the rental market. Vacancy rates are "edging up from post-pandemic lows," which is economist-speak for "landlords are discovering that rent growth doesn't go up 15% forever." Some are even offering concessions—move-in specials, free months, waived deposits. In a market that spent three years with waiting lists for rentals, this feels almost revolutionary.
+        </p>
+
+        {/* Economic Context */}
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 my-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">The Roseburg Economic Reality Check</h3>
+          <p className="text-gray-700">
+            Roseburg's economy runs on healthcare, timber, small manufacturing, and logistics. It's stable but not dynamic—the kind of economy that provides steady jobs but not the wage growth needed to keep up with housing costs that doubled in some neighborhoods. The disconnect between local wages and housing costs, amplified by in-migration from higher-income areas, is the central tension in this story.
+          </p>
+        </div>
+
+        <h2 className="text-3xl font-bold text-gray-900 mt-12 mb-6">Reading the Tea Leaves</h2>
+
+        <p>
+          Market predictions are usually about as reliable as weather forecasts for next month, but the baseline expectation for Roseburg through 2026 is refreshingly honest: sideways. Not the explosive growth of 2020-2022, not a crash, just... sideways.
+        </p>
+
+        <p>
+          This sideways motion isn't necessarily bad news. It's a market finding its footing after a period of irrational exuberance. Entry-level homes remain constrained—there simply aren't enough of them—but the days of bidding wars and waived inspections are largely over. Time-on-market has normalized, which means buyers can actually look at a house, think about it overnight, maybe even negotiate.
+        </p>
+
+        <h3 className="text-xl font-semibold text-gray-800 mt-8 mb-4">The Inventory Equation</h3>
+        <p>
+          The move from under two months of inventory to 3-4 months represents a fundamental shift from a seller's market to something approaching balance. For perspective: in a truly balanced market, you'd expect 5-6 months of inventory. Roseburg isn't there yet, but it's close enough that both buyers and sellers have to actually negotiate rather than simply accept or reject terms.
+        </p>
+
+        {/* Future Outlook */}
+        <div className="bg-gradient-to-r from-gray-900 to-blue-900 text-white p-8 rounded-lg my-8">
+          <h3 className="text-xl font-bold mb-4">The Plot Twist Nobody Saw Coming</h3>
+          <p className="mb-4">
+            Here's what's fascinating about Roseburg's story: it may have accidentally stumbled into a more sustainable model. The explosive growth of 2020-2022 was fueled by historically abnormal conditions—zero percent interest rates, pandemic migration, and FOMO buying. The current market, while less exciting, is actually more predictable.
+          </p>
+          <p>
+            Rent growth tracking income growth? Prices that don't require six-figure down payments from tech refugees? A market where local buyers can actually compete? In the context of American housing markets in 2025, this sounds almost radical.
+          </p>
+        </div>
+
+        <h2 className="text-3xl font-bold text-gray-900 mt-12 mb-6">The Bigger Picture</h2>
+
+        <p>
+          Roseburg's real estate market in 2025 offers a case study in what happens when an affordable housing market collides with pandemic-era migration and monetary policy, then has to figure out how to function when the music stops.
+        </p>
+
+        <p>
+          The story isn't over—it's just entering a new chapter. One where mortgage calculators matter more than speed of offer, where rental concessions exist, and where a house might sit on the market long enough for a buyer to actually visit it twice.
+        </p>
+
+        <p>
+          For a small Oregon town that found itself accidentally at the center of America's housing crisis, this might actually count as a happy ending. Or at least, the beginning of one.
+        </p>
+
+        {/* Call to Action */}
+        <div className="bg-emerald-50 border border-emerald-200 p-6 rounded-lg mt-12">
+          <h3 className="text-lg font-semibold text-emerald-900 mb-3">Exploring Roseburg Real Estate?</h3>
+          <p className="text-emerald-800 mb-4">
+            Whether you're a lifestyle buyer, local first-time purchaser, or investor, understanding these market dynamics is crucial for making informed decisions in Douglas County's evolving real estate landscape.
+          </p>
+          <p className="text-sm text-emerald-700">
+            For current listings and local market insights, explore our comprehensive directory of Roseburg-area real estate professionals and services.
+          </p>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="mt-12 pt-8 border-t border-gray-200 text-center text-gray-500">
+        <p>Market analysis based on Douglas County real estate data as of September 15, 2025</p>
+        <p className="mt-2 text-sm">Oregon SMB Directory • Supporting Local Business Growth</p>
+      </footer>
+    </article>
+  );
+}
