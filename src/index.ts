@@ -47,36 +47,40 @@ class BusinessDataService {
   async getBusinesses(citySlug: string, industrySlug: string, limit: number = 50): Promise<Business[]> {
     // Normalize inputs
     const cityName = CITIES.find(c => c.slug === citySlug)?.name || citySlug;
-    const normalizedIndustry = industrySlug.toLowerCase();
 
-    console.log(`[BusinessDataService] Querying for city: ${cityName}, industry: ${normalizedIndustry}`);
+    // Map industry slugs to database variants (some use display names)
+    const industryVariants = {
+      'lawfirms': ['lawfirms', 'Legal Services'],
+      'roofers': ['roofers', 'Roofing Services'],
+      'plumbers': ['plumbers', 'Plumbing Services'],
+      'electricians': ['electricians'],
+      'general-contractors': ['general-contractors'],
+      'real-estate': ['real-estate']
+    }[industrySlug] || [industrySlug];
+
+    console.log(`[BusinessDataService] Query for city: ${cityName}, industry variants: ${industryVariants.join(', ')}`);
 
     try {
-      // Use D1 prepared statement with proper error handling
+      // Query with industry variants
+      const industryConditions = industryVariants.map(() => 'industry = ?').join(' OR ');
       const stmt = this.db.prepare(`
         SELECT
           id, name, city, state, industry, services, verified,
           website, yearsInBusiness, phone, address, email,
           rating, reviewCount, licenseNumber, bbbRating, emergencyService
         FROM businesses
-        WHERE LOWER(TRIM(city)) = LOWER(TRIM(?))
-        AND LOWER(TRIM(industry)) = LOWER(TRIM(?))
-        AND verified = 1
-        ORDER BY
-          CASE WHEN rating IS NOT NULL THEN rating ELSE 0 END DESC,
-          CASE WHEN reviewCount IS NOT NULL THEN reviewCount ELSE 0 END DESC,
-          CASE WHEN yearsInBusiness IS NOT NULL THEN yearsInBusiness ELSE 0 END DESC
+        WHERE city = ? AND (${industryConditions})
         LIMIT ?
       `);
 
-      const result = await stmt.bind(cityName, normalizedIndustry, limit).all();
+      const result = await stmt.bind(cityName, ...industryVariants, limit).all();
 
       if (!result.success) {
         console.error(`[BusinessDataService] D1 query failed:`, result.error);
         return this.getFallbackBusinesses(citySlug, industrySlug, limit);
       }
 
-      const businesses = result.results.map(this.normalizeBusinessData);
+      const businesses = result.results.map((row) => this.normalizeBusinessData(row));
       console.log(`[BusinessDataService] D1 returned ${businesses.length} businesses`);
 
       // If D1 returns no results, try fallback data
@@ -207,7 +211,7 @@ class BusinessDataService {
       city: dbRow.city,
       state: dbRow.state,
       industry: dbRow.industry,
-      services: this.parseServices(dbRow.services),
+      services: typeof dbRow.services === 'string' ? JSON.parse(dbRow.services || '[]') : (dbRow.services || []),
       verified: Boolean(dbRow.verified),
       website: dbRow.website,
       yearsInBusiness: dbRow.yearsInBusiness,

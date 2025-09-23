@@ -19,6 +19,14 @@ Oregon SMB Directory - A dual-architecture business directory covering the I-5 c
 - Database-first approach with businesses stored in D1, queried dynamically
 - Blog system integrated into Worker with full CMS capabilities
 
+## Development Workflow Rules
+
+### CRITICAL: Testing Order Protocol
+1. **Local Testing First**: Always test data flow and functionality locally with wrangler dev
+2. **GitHub Commit**: Only commit after local verification of data integrity
+3. **Cloudflare Deployment**: Deploy only after GitHub commit and local validation
+4. **Never skip local testing**: Database changes must be verified locally before deployment
+
 ## Development Commands
 
 ### Cloudflare Worker (Primary)
