@@ -45,20 +45,37 @@ class BusinessDataService {
    * Implements robust error handling and proper D1 query patterns
    */
   async getBusinesses(citySlug: string, industrySlug: string, limit: number = 50): Promise<Business[]> {
+    // First, test database connection with simple query
+    try {
+      const testResult = await this.db.prepare("SELECT COUNT(*) as count FROM businesses").first();
+      console.log(`[BusinessDataService] Database connection test - Total businesses in DB: ${testResult?.count || 'FAILED'}`);
+    } catch (error) {
+      console.error(`[BusinessDataService] Database connection test FAILED:`, error);
+    }
+
     // Normalize inputs
     const cityName = CITIES.find(c => c.slug === citySlug)?.name || citySlug;
+    console.log(`[BusinessDataService] City slug: "${citySlug}" -> City name: "${cityName}"`);
 
-    // Map industry slugs to database variants (some use display names)
+    // Comprehensive industry mapping - include all possible variants
     const industryVariants = {
-      'lawfirms': ['lawfirms', 'Legal Services'],
-      'roofers': ['roofers', 'Roofing Services'],
-      'plumbers': ['plumbers', 'Plumbing Services'],
-      'electricians': ['electricians'],
-      'general-contractors': ['general-contractors'],
-      'real-estate': ['real-estate']
+      'lawfirms': ['lawfirms', 'Legal Services', 'Lawyers', 'Law Firms'],
+      'roofers': ['roofers', 'Roofing Services', 'Roofers', 'Roofing'],
+      'plumbers': ['plumbers', 'Plumbing Services', 'Plumbers', 'Plumbing'],
+      'electricians': ['electricians', 'Electrical Services', 'Electricians', 'Electrical'],
+      'general-contractors': ['general-contractors', 'General Contractors', 'Contractors'],
+      'real-estate': ['real-estate', 'Real Estate', 'Real Estate Agents']
     }[industrySlug] || [industrySlug];
 
-    console.log(`[BusinessDataService] Query for city: ${cityName}, industry variants: ${industryVariants.join(', ')}`);
+    console.log(`[BusinessDataService] Industry slug: "${industrySlug}" -> Industry variants: [${industryVariants.map(v => `"${v}"`).join(', ')}]`);
+
+    // Test what industries actually exist in database
+    try {
+      const industryTest = await this.db.prepare("SELECT DISTINCT industry FROM businesses WHERE city = ? LIMIT 20").bind(cityName).all();
+      console.log(`[BusinessDataService] Actual industries in DB for ${cityName}:`, industryTest.results?.map(r => r.industry));
+    } catch (error) {
+      console.error(`[BusinessDataService] Industry lookup failed:`, error);
+    }
 
     try {
       // Query with industry variants
@@ -75,13 +92,25 @@ class BusinessDataService {
 
       const result = await stmt.bind(cityName, ...industryVariants, limit).all();
 
+      console.log(`[BusinessDataService] D1 query executed - Success: ${result.success}`);
       if (!result.success) {
         console.error(`[BusinessDataService] D1 query failed:`, result.error);
+        console.error(`[BusinessDataService] Failed query parameters - City: "${cityName}", Variants: [${industryVariants.map(v => `"${v}"`).join(', ')}], Limit: ${limit}`);
         return this.getFallbackBusinesses(citySlug, industrySlug, limit);
       }
 
+      console.log(`[BusinessDataService] D1 raw results count: ${result.results?.length || 0}`);
+      if (result.results && result.results.length > 0) {
+        console.log(`[BusinessDataService] Sample D1 result:`, {
+          id: result.results[0].id,
+          name: result.results[0].name,
+          city: result.results[0].city,
+          industry: result.results[0].industry
+        });
+      }
+
       const businesses = result.results.map((row) => this.normalizeBusinessData(row));
-      console.log(`[BusinessDataService] D1 returned ${businesses.length} businesses`);
+      console.log(`[BusinessDataService] D1 returned ${businesses.length} businesses after normalization`);
 
       // If D1 returns no results, try fallback data
       if (businesses.length === 0) {
@@ -205,13 +234,46 @@ class BusinessDataService {
    * Normalize business data from D1 to standard format
    */
   private normalizeBusinessData(dbRow: any): Business {
+    // Safely parse services field with comprehensive error handling
+    let services: string[] = [];
+    if (dbRow.services) {
+      try {
+        if (typeof dbRow.services === 'string') {
+          // First try to parse as JSON
+          try {
+            const parsed = JSON.parse(dbRow.services);
+            services = Array.isArray(parsed) ? parsed : [dbRow.services];
+          } catch (jsonError) {
+            // If JSON parsing fails, try other common formats
+            if (dbRow.services.includes(',')) {
+              // Comma-separated values
+              services = dbRow.services.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
+            } else if (dbRow.services.includes('|')) {
+              // Pipe-separated values
+              services = dbRow.services.split('|').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
+            } else {
+              // Single service as string
+              services = [dbRow.services];
+            }
+          }
+        } else if (Array.isArray(dbRow.services)) {
+          services = dbRow.services;
+        } else {
+          services = [];
+        }
+      } catch (error) {
+        console.error(`[BusinessDataService] Services parsing error for business ${dbRow.id}:`, error, 'Raw services:', dbRow.services);
+        services = ['Professional Services']; // Safe fallback
+      }
+    }
+
     return {
       id: dbRow.id,
       name: dbRow.name,
       city: dbRow.city,
       state: dbRow.state,
       industry: dbRow.industry,
-      services: typeof dbRow.services === 'string' ? JSON.parse(dbRow.services || '[]') : (dbRow.services || []),
+      services: services,
       verified: Boolean(dbRow.verified),
       website: dbRow.website,
       yearsInBusiness: dbRow.yearsInBusiness,
@@ -854,6 +916,280 @@ function getIndustryCitySelectionPage(industry: any): string {
 </html>`;
 }
 
+// Blog listing page
+function getBlogListingPage(posts: BlogPost[]): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog & Resources - Oregon SMB Directory</title>
+    <meta name="description" content="Business tips, industry insights, and local Oregon business resources from the Oregon SMB Directory.">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+        .hero { background: linear-gradient(135deg, #4F46E5, #3B82F6); color: white; padding: 4rem 2rem; text-align: center; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; margin: 2rem 0; }
+        .post-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; }
+        .post-header { padding: 1.5rem 1.5rem 1rem; }
+        .post-body { padding: 0 1.5rem 1.5rem; }
+        .post-meta { color: #6b7280; font-size: 0.9rem; margin-bottom: 1rem; }
+        .post-title { margin: 0 0 1rem; color: #1f2937; }
+        .post-title a { color: inherit; text-decoration: none; }
+        .post-title a:hover { color: #4F46E5; }
+        .post-excerpt { color: #4b5563; line-height: 1.6; margin-bottom: 1rem; }
+        .read-more { color: #4F46E5; text-decoration: none; font-weight: 600; }
+        .read-more:hover { text-decoration: underline; }
+        .breadcrumb { padding: 1rem; background: #f9fafb; }
+        .breadcrumb a { margin-right: 0.5rem; color: #4F46E5; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="/">Oregon SMB Directory</a> › <strong>Blog & Resources</strong>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div class="container">
+            <h1>Business Resources & Tips</h1>
+            <p>Expert advice for Oregon businesses and homeowners</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 style="margin: 3rem 0 1rem;">Latest Articles</h2>
+
+        ${posts.length > 0 ? `
+            <div class="grid">
+                ${posts.map(post => `
+                    <article class="post-card">
+                        <div class="post-header">
+                            <div class="post-meta">
+                                ${new Date(post.created_at).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric'
+                                })}
+                            </div>
+                            <h3 class="post-title">
+                                <a href="/blog/${post.slug}">${post.title}</a>
+                            </h3>
+                        </div>
+                        <div class="post-body">
+                            <p class="post-excerpt">${post.excerpt || ''}</p>
+                            <a href="/blog/${post.slug}" class="read-more">Read Article →</a>
+                        </div>
+                    </article>
+                `).join('')}
+            </div>
+        ` : `
+            <div style="text-align: center; padding: 4rem; color: #6b7280;">
+                <h3>Blog Posts Coming Soon</h3>
+                <p>We're working on adding helpful articles for Oregon businesses.</p>
+                <a href="/admin" style="color: #4F46E5; text-decoration: none;">Admin Login</a>
+            </div>
+        `}
+    </div>
+    ${getFooter()}
+</body>
+</html>`;
+}
+
+// Individual blog post page
+function getBlogPostPage(post: BlogPost): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${post.meta_title || post.title} - Oregon SMB Directory</title>
+    <meta name="description" content="${post.meta_description || post.excerpt || ''}">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; line-height: 1.6; }
+        .hero { background: linear-gradient(135deg, #4F46E5, #3B82F6); color: white; padding: 3rem 2rem; }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 1rem; }
+        .article { background: white; margin: -2rem auto 2rem; border-radius: 12px; padding: 3rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .post-meta { color: #6b7280; font-size: 0.9rem; margin-bottom: 2rem; }
+        .post-content { color: #374151; line-height: 1.8; }
+        .post-content h1, .post-content h2, .post-content h3 { color: #1f2937; margin-top: 2rem; }
+        .post-content h1 { font-size: 2rem; }
+        .post-content h2 { font-size: 1.5rem; }
+        .post-content h3 { font-size: 1.25rem; }
+        .post-content p { margin-bottom: 1.5rem; }
+        .post-content ul, .post-content ol { margin-bottom: 1.5rem; padding-left: 2rem; }
+        .post-content li { margin-bottom: 0.5rem; }
+        .breadcrumb { padding: 1rem; background: #f9fafb; }
+        .breadcrumb a { margin-right: 0.5rem; color: #4F46E5; text-decoration: none; }
+        .back-link { display: inline-block; margin-top: 2rem; color: #4F46E5; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="/">Oregon SMB Directory</a> ›
+            <a href="/blog">Blog</a> ›
+            <strong>${post.title}</strong>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div class="container">
+            <h1>${post.title}</h1>
+            <div class="post-meta">
+                Published ${new Date(post.created_at).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <article class="article">
+            <div class="post-content">
+                ${post.content.replace(/\n/g, '<br>')}
+            </div>
+            <a href="/blog" class="back-link">← Back to Blog</a>
+        </article>
+    </div>
+    ${getFooter()}
+</body>
+</html>`;
+}
+
+// Admin dashboard page
+function getAdminPage(): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Oregon SMB Directory</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 2rem; background: #f9fafb; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #374151; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem; }
+        .form-group textarea { min-height: 200px; font-family: monospace; }
+        .btn { background: #4F46E5; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; }
+        .btn:hover { background: #3730a3; }
+        .success { background: #10b981; color: white; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; }
+        .error { background: #ef4444; color: white; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Blog Admin Dashboard</h1>
+        <p style="color: #6b7280;">Create and manage blog posts for Oregon SMB Directory</p>
+
+        <div id="message" class="hidden"></div>
+
+        <form id="blogForm" onsubmit="saveBlogPost(event)">
+            <div class="form-group">
+                <label for="title">Post Title</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="slug">URL Slug</label>
+                <input type="text" id="slug" name="slug" required placeholder="url-friendly-title">
+            </div>
+
+            <div class="form-group">
+                <label for="excerpt">Excerpt</label>
+                <textarea id="excerpt" name="excerpt" rows="3" placeholder="Brief description for listings..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="content">Content</label>
+                <textarea id="content" name="content" required placeholder="Write your blog post content here..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="tags">Tags</label>
+                <input type="text" id="tags" name="tags" placeholder="tag1, tag2, tag3">
+            </div>
+
+            <div class="form-group">
+                <label for="meta_title">Meta Title (SEO)</label>
+                <input type="text" id="meta_title" name="meta_title">
+            </div>
+
+            <div class="form-group">
+                <label for="meta_description">Meta Description (SEO)</label>
+                <textarea id="meta_description" name="meta_description" rows="2"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select id="status" name="status">
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn">Save Blog Post</button>
+        </form>
+    </div>
+
+    <script>
+        // Auto-generate slug from title
+        document.getElementById('title').addEventListener('input', function(e) {
+            const slug = e.target.value
+                .toLowerCase()
+                .replace(/[^a-z0-9 -]/g, '')
+                .replace(/\\s+/g, '-')
+                .replace(/-+/g, '-')
+                .trim('-');
+            document.getElementById('slug').value = slug;
+        });
+
+        async function saveBlogPost(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const messageDiv = document.getElementById('message');
+
+            try {
+                const response = await fetch('/admin/save-post', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    messageDiv.className = 'success';
+                    messageDiv.textContent = 'Blog post saved successfully!';
+                    messageDiv.classList.remove('hidden');
+
+                    // Reset form
+                    event.target.reset();
+                } else {
+                    throw new Error(result.error || 'Failed to save');
+                }
+            } catch (error) {
+                messageDiv.className = 'error';
+                messageDiv.textContent = 'Error: ' + error.message;
+                messageDiv.classList.remove('hidden');
+            }
+
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                messageDiv.classList.add('hidden');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>`;
+}
+
 // Shared footer component
 function getFooter(): string {
   return `
@@ -965,6 +1301,67 @@ export default {
           return new Response(getIndustryPage(city, industry, businesses), {
             headers: { 'Content-Type': 'text/html' }
           });
+        }
+      }
+
+      // Blog routes
+      if (segments[0] === 'blog') {
+        if (segments.length === 1) {
+          // Blog listing page: /blog
+          const posts = await getBlogPosts(env.DB, 'published', 10);
+          return new Response(getBlogListingPage(posts), {
+            headers: { 'Content-Type': 'text/html' }
+          });
+        } else if (segments.length === 2) {
+          // Individual blog post: /blog/slug
+          const slug = segments[1];
+          const post = await getBlogPostBySlug(env.DB, slug);
+
+          if (post) {
+            return new Response(getBlogPostPage(post), {
+              headers: { 'Content-Type': 'text/html' }
+            });
+          }
+        }
+      }
+
+      // Admin routes
+      if (segments[0] === 'admin') {
+        if (segments.length === 1) {
+          // Admin login/dashboard page: /admin
+          return new Response(getAdminPage(), {
+            headers: { 'Content-Type': 'text/html' }
+          });
+        } else if (segments.length === 2 && segments[1] === 'save-post') {
+          // Handle blog post saving: /admin/save-post
+          if (request.method === 'POST') {
+            try {
+              const formData = await request.formData();
+              const postData = {
+                id: formData.get('id') as string || undefined,
+                title: formData.get('title') as string,
+                slug: formData.get('slug') as string,
+                content: formData.get('content') as string,
+                excerpt: formData.get('excerpt') as string,
+                status: formData.get('status') as string,
+                tags: formData.get('tags') as string,
+                meta_title: formData.get('meta_title') as string,
+                meta_description: formData.get('meta_description') as string
+              };
+
+              const savedId = await saveBlogPost(env.DB, postData);
+
+              return new Response(JSON.stringify({ success: true, id: savedId }), {
+                headers: { 'Content-Type': 'application/json' }
+              });
+            } catch (error) {
+              console.error('Blog post save error:', error);
+              return new Response(JSON.stringify({ success: false, error: 'Failed to save post' }), {
+                status: 500,
+                headers: { 'Content-Type': 'application/json' }
+              });
+            }
+          }
         }
       }
 
