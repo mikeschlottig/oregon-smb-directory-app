@@ -270,7 +270,7 @@ async function getBlogPosts(db: D1Database, status: string = 'published', limit:
     `);
 
     const result = await stmt.bind(status, limit).all();
-    return result.results as BlogPost[];
+    return result.results as unknown as BlogPost[];
   } catch (error) {
     console.error('Blog query error:', error);
     return [];
@@ -281,7 +281,7 @@ async function getBlogPostBySlug(db: D1Database, slug: string): Promise<BlogPost
   try {
     const stmt = db.prepare(`SELECT * FROM blog_posts WHERE slug = ? LIMIT 1`);
     const result = await stmt.bind(slug).first();
-    return result as BlogPost | null;
+    return result as unknown as BlogPost | null;
   } catch (error) {
     console.error('Blog query error:', error);
     return null;

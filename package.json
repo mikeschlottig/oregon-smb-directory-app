@@ -3,17 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "./dev-remote.sh",
-    "dev:local": "wrangler dev",
-    "build": "tsc",
-    "start": "next start",
-    "lint": "next lint",
-    "type-check": "tsc --noEmit",
+    "dev": "wrangler dev",
+    "dev:remote": "./dev-remote.sh",
+    "build": "tsc --project tsconfig.worker.json",
+    "build:worker": "tsc --project tsconfig.worker.json",
+    "type-check": "tsc --project tsconfig.worker.json --noEmit",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write \"src/**/*.{ts,js}\"",
     "deploy": "wrangler deploy",
+    "deploy:dev": "wrangler deploy --env dev",
     "deploy:prod": "wrangler deploy --env production",
     "db:remote": "wrangler d1 execute oregon-smb-directory --remote",
     "db:local": "wrangler d1 execute oregon-smb-directory",
-    "db:backup": "wrangler d1 export oregon-smb-directory --remote"
+    "db:backup": "wrangler d1 export oregon-smb-directory --remote",
+    "db:schema": "wrangler d1 execute oregon-smb-directory --file=schema.sql --remote",
+    "types": "wrangler types"
   },
   "dependencies": {
     "@types/node": "^20",
