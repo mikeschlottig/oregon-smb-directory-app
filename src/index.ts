@@ -482,7 +482,7 @@ function getHomePage(): string {
                 <div class="card" style="text-align: center;">
                     <div class="icon">${industry.icon}</div>
                     <h3>${industry.name}</h3>
-                    <a href="/portland/${industry.slug}">View Directory →</a>
+                    <a href="/${industry.slug}">View Directory →</a>
                 </div>
             `).join('')}
         </div>
@@ -705,6 +705,151 @@ function getIndustryPage(city: any, industry: any, businesses: Business[]): stri
 </html>`;
 }
 
+// Industry page that shows city selection
+function getIndustryCitySelectionPage(industry: any): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${industry.name} - Oregon SMB Directory</title>
+    <meta name="description" content="Find verified ${industry.name.toLowerCase()} in Oregon cities along the I-5 corridor. Professional business directory with ratings and reviews.">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        .hero {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
+            color: white;
+            padding: 6rem 0 4rem;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            margin: 0 0 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .hero .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        .main-content {
+            background: white;
+            margin: -2rem 0 0;
+            border-radius: 1rem 1rem 0 0;
+            padding: 3rem 0;
+            position: relative;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #f1f5f9;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        .card h3 {
+            color: #2d3748;
+            margin: 0 0 0.5rem;
+            font-size: 1.5rem;
+        }
+        .card p {
+            color: #718096;
+            margin: 0 0 1.5rem;
+            font-size: 1rem;
+        }
+        .card a {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .card a:hover {
+            background: linear-gradient(135deg, #5a6fd8, #6a4190);
+            transform: translateY(-2px);
+        }
+        .breadcrumb {
+            padding: 1rem 0;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero .subtitle { font-size: 1.1rem; }
+            .grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="container">
+            <div class="icon">${industry.icon}</div>
+            <h1>${industry.name}</h1>
+            <p class="subtitle">Choose your city to find verified ${industry.name.toLowerCase()} near you</p>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="/">Home</a> → ${industry.name}
+            </div>
+
+            <h2 style="text-align: center; margin: 0 0 1rem; color: #2d3748; font-size: 2.5rem;">Select Your City</h2>
+            <p style="text-align: center; color: #718096; font-size: 1.1rem; margin-bottom: 3rem;">
+                Choose from these major Oregon cities along the I-5 corridor
+            </p>
+
+            <div class="grid">
+                ${CITIES.map(city => `
+                    <div class="card">
+                        <h3>${city.name}</h3>
+                        <p>${city.county} County • Population: ${city.population.toLocaleString()}</p>
+                        <a href="/${city.slug}/${industry.slug}">View ${industry.name} →</a>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    </div>
+    ${getFooter()}
+</body>
+</html>`;
+}
+
 // Shared footer component
 function getFooter(): string {
   return `
@@ -777,8 +922,18 @@ export default {
         });
       }
 
-      // City page: /portland
+      // Industry page: /electricians (show cities)
       if (segments.length === 1) {
+        const potentialIndustrySlug = segments[0];
+        const industry = INDUSTRIES.find(i => i.slug === potentialIndustrySlug);
+
+        if (industry) {
+          return new Response(getIndustryCitySelectionPage(industry), {
+            headers: { 'Content-Type': 'text/html' }
+          });
+        }
+
+        // City page: /portland
         const citySlug = segments[0];
         const city = CITIES.find(c => c.slug === citySlug);
 

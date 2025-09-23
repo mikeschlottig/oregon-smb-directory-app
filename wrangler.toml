@@ -39,8 +39,8 @@ database_name = "oregon-smb-directory"
 database_id = "7fc369ad-7c69-4a2d-b5e0-825535c6a094"
 
 # Worker limits and configuration
-[limits]
-cpu_ms = 50
+# [limits]
+# cpu_ms = 50  # Not supported on Free plan
 
 # Build configuration
 [build]
