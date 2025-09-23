@@ -1190,6 +1190,344 @@ function getAdminPage(): string {
 </html>`;
 }
 
+// Static page functions
+function getContactPage(): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Oregon SMB Directory</title>
+    <meta name="description" content="Contact Oregon SMB Directory for business listings, support, or general inquiries.">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+        .hero { background: linear-gradient(135deg, #4F46E5, #3B82F6); color: white; padding: 4rem 2rem; text-align: center; }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 1rem; }
+        .content { background: white; margin: 2rem auto; padding: 3rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .contact-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin: 2rem 0; }
+        .contact-card { background: #f9fafb; padding: 1.5rem; border-radius: 8px; }
+        .breadcrumb { padding: 1rem; background: #f9fafb; }
+        .breadcrumb a { margin-right: 0.5rem; color: #4F46E5; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="/">Oregon SMB Directory</a> › <strong>Contact</strong>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div class="container">
+            <h1>Contact Oregon SMB Directory</h1>
+            <p>Get in touch with us for support, business listings, or general inquiries</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <div class="contact-info">
+                <div class="contact-card">
+                    <h3>📞 Phone Support</h3>
+                    <p><strong>(541) 450-2082</strong></p>
+                    <p>Monday - Friday: 9:00 AM - 5:00 PM PST</p>
+                </div>
+                <div class="contact-card">
+                    <h3>✉️ Email</h3>
+                    <p><strong>contact@oregonsmbdirectory.com</strong></p>
+                    <p>We respond within 24 hours</p>
+                </div>
+                <div class="contact-card">
+                    <h3>🏢 Business Listings</h3>
+                    <p><a href="/get-listed" style="color: #4F46E5;">Get Your Business Listed</a></p>
+                    <p>Fast approval process</p>
+                </div>
+                <div class="contact-card">
+                    <h3>📍 Service Area</h3>
+                    <p><strong>Oregon I-5 Corridor</strong></p>
+                    <p>Portland to Ashland</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    ${getFooter()}
+</body>
+</html>`;
+}
+
+function getAboutPage(): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Oregon SMB Directory</title>
+    <meta name="description" content="Learn about Oregon SMB Directory - your trusted source for verified Oregon businesses along the I-5 corridor.">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+        .hero { background: linear-gradient(135deg, #4F46E5, #3B82F6); color: white; padding: 4rem 2rem; text-align: center; }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 1rem; }
+        .content { background: white; margin: 2rem auto; padding: 3rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); line-height: 1.6; }
+        .breadcrumb { padding: 1rem; background: #f9fafb; }
+        .breadcrumb a { margin-right: 0.5rem; color: #4F46E5; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="/">Oregon SMB Directory</a> › <strong>About</strong>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div class="container">
+            <h1>About Oregon SMB Directory</h1>
+            <p>Your trusted source for verified Oregon businesses</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <h2>Our Mission</h2>
+            <p>Oregon SMB Directory is dedicated to connecting customers with reliable, verified small and medium businesses throughout Oregon's I-5 corridor. From Portland to Ashland, we help you find the right professionals for your needs.</p>
+
+            <h2>Why Choose Oregon SMB Directory?</h2>
+            <ul>
+                <li><strong>100% Verified Businesses</strong> - Every listing is verified for authenticity</li>
+                <li><strong>Local Focus</strong> - Specialized in Oregon I-5 corridor businesses</li>
+                <li><strong>Comprehensive Coverage</strong> - 6 major cities, 6 key industries</li>
+                <li><strong>Quality Assured</strong> - Licensed professionals with ratings and reviews</li>
+            </ul>
+
+            <h2>Our Coverage</h2>
+            <p><strong>Cities:</strong> Portland, Salem, Eugene, Medford, Grants Pass, Roseburg</p>
+            <p><strong>Industries:</strong> Electricians, Plumbers, Roofers, General Contractors, Legal Services, Real Estate</p>
+
+            <h2>Contact Us</h2>
+            <p>Questions or need support? <a href="/contact" style="color: #4F46E5;">Contact our team</a> - we're here to help!</p>
+        </div>
+    </div>
+    ${getFooter()}
+</body>
+</html>`;
+}
+
+function getPrivacyPage(): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Oregon SMB Directory</title>
+    <meta name="description" content="Privacy Policy for Oregon SMB Directory - Learn how we protect your personal information.">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+        .hero { background: linear-gradient(135deg, #4F46E5, #3B82F6); color: white; padding: 4rem 2rem; text-align: center; }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 1rem; }
+        .content { background: white; margin: 2rem auto; padding: 3rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); line-height: 1.6; }
+        .breadcrumb { padding: 1rem; background: #f9fafb; }
+        .breadcrumb a { margin-right: 0.5rem; color: #4F46E5; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="/">Oregon SMB Directory</a> › <strong>Privacy Policy</strong>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div class="container">
+            <h1>Privacy Policy</h1>
+            <p>How we protect your information</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <p><strong>Last updated:</strong> ${new Date().toLocaleDateString()}</p>
+
+            <h2>Information We Collect</h2>
+            <p>We collect information to provide better services to our users:</p>
+            <ul>
+                <li>Contact information when you submit business listings</li>
+                <li>Usage data to improve our directory services</li>
+                <li>Business information for verification purposes</li>
+            </ul>
+
+            <h2>How We Use Information</h2>
+            <p>We use the information we collect to:</p>
+            <ul>
+                <li>Provide and maintain our directory services</li>
+                <li>Verify business listings and maintain quality</li>
+                <li>Communicate with business owners and users</li>
+                <li>Improve our services and user experience</li>
+            </ul>
+
+            <h2>Information Sharing</h2>
+            <p>We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy.</p>
+
+            <h2>Data Security</h2>
+            <p>We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.</p>
+
+            <h2>Contact Us</h2>
+            <p>If you have questions about this Privacy Policy, please <a href="/contact" style="color: #4F46E5;">contact us</a>.</p>
+        </div>
+    </div>
+    ${getFooter()}
+</body>
+</html>`;
+}
+
+function getFAQPage(): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Oregon SMB Directory</title>
+    <meta name="description" content="Frequently asked questions about Oregon SMB Directory business listings and services.">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+        .hero { background: linear-gradient(135deg, #4F46E5, #3B82F6); color: white; padding: 4rem 2rem; text-align: center; }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 1rem; }
+        .content { background: white; margin: 2rem auto; padding: 3rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); line-height: 1.6; }
+        .faq-item { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; }
+        .faq-question { font-weight: 600; color: #1f2937; margin-bottom: 0.5rem; }
+        .breadcrumb { padding: 1rem; background: #f9fafb; }
+        .breadcrumb a { margin-right: 0.5rem; color: #4F46E5; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="/">Oregon SMB Directory</a> › <strong>FAQ</strong>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div class="container">
+            <h1>Frequently Asked Questions</h1>
+            <p>Find answers to common questions</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <div class="faq-item">
+                <div class="faq-question">How do I get my business listed?</div>
+                <div class="faq-answer">Visit our <a href="/get-listed" style="color: #4F46E5;">Get Listed</a> page to submit your business information. All listings go through our verification process.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Is listing my business free?</div>
+                <div class="faq-answer">We offer both free basic listings and premium listings with enhanced features. Contact us for current pricing options.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How do you verify businesses?</div>
+                <div class="faq-answer">We verify licenses, check business registrations, and validate contact information to ensure all listings are legitimate.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Which areas do you cover?</div>
+                <div class="faq-answer">We cover the entire Oregon I-5 corridor including Portland, Salem, Eugene, Medford, Grants Pass, and Roseburg.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Can I update my business information?</div>
+                <div class="faq-answer">Yes! <a href="/contact" style="color: #4F46E5;">Contact us</a> with your updated information and we'll make the changes promptly.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How do I report incorrect information?</div>
+                <div class="faq-answer">Please <a href="/contact" style="color: #4F46E5;">contact us</a> with details about any incorrect information and we'll investigate and correct it.</div>
+            </div>
+        </div>
+    </div>
+    ${getFooter()}
+</body>
+</html>`;
+}
+
+function getGetListedPage(): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Listed - Oregon SMB Directory</title>
+    <meta name="description" content="Get your Oregon business listed in our verified directory. Fast approval process for qualified businesses.">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+        .hero { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 4rem 2rem; text-align: center; }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 1rem; }
+        .content { background: white; margin: 2rem auto; padding: 3rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); line-height: 1.6; }
+        .benefits { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .benefit { background: #f0fdf4; padding: 1.5rem; border-radius: 8px; }
+        .cta-button { background: #10b981; color: white; padding: 1rem 2rem; text-decoration: none; border-radius: 8px; display: inline-block; margin: 1rem 0; font-weight: 600; }
+        .breadcrumb { padding: 1rem; background: #f9fafb; }
+        .breadcrumb a { margin-right: 0.5rem; color: #4F46E5; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="/">Oregon SMB Directory</a> › <strong>Get Listed</strong>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div class="container">
+            <h1>Get Your Business Listed</h1>
+            <p>Join Oregon's most trusted business directory</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <h2>Why List Your Business?</h2>
+            <div class="benefits">
+                <div class="benefit">
+                    <h3>🎯 Local Exposure</h3>
+                    <p>Reach customers specifically looking for services in your Oregon community.</p>
+                </div>
+                <div class="benefit">
+                    <h3>✅ Verified Badge</h3>
+                    <p>Build trust with our verification process and verified business badge.</p>
+                </div>
+                <div class="benefit">
+                    <h3>📱 Mobile Optimized</h3>
+                    <p>Your listing looks great on all devices, reaching customers everywhere.</p>
+                </div>
+                <div class="benefit">
+                    <h3>📞 Direct Contact</h3>
+                    <p>Customers can call, email, or visit your website directly from your listing.</p>
+                </div>
+            </div>
+
+            <h2>Listing Requirements</h2>
+            <ul>
+                <li>Valid Oregon business license</li>
+                <li>Physical location or service area in Oregon I-5 corridor</li>
+                <li>Operating in one of our covered industries</li>
+                <li>Current contact information</li>
+            </ul>
+
+            <h2>Ready to Get Started?</h2>
+            <p>Contact us to begin the listing process. Our team will guide you through verification and get your business online quickly.</p>
+
+            <a href="/contact" class="cta-button">Contact Us to Get Listed</a>
+
+            <h2>Questions?</h2>
+            <p>Check our <a href="/faq" style="color: #4F46E5;">FAQ</a> or <a href="/contact" style="color: #4F46E5;">contact us</a> for more information about our listing process.</p>
+        </div>
+    </div>
+    ${getFooter()}
+</body>
+</html>`;
+}
+
 // Shared footer component
 function getFooter(): string {
   return `
@@ -1363,6 +1701,37 @@ export default {
             }
           }
         }
+      }
+
+      // Static page routes
+      if (normalizedPath === '/contact') {
+        return new Response(getContactPage(), {
+          headers: { 'Content-Type': 'text/html' }
+        });
+      }
+
+      if (normalizedPath === '/about') {
+        return new Response(getAboutPage(), {
+          headers: { 'Content-Type': 'text/html' }
+        });
+      }
+
+      if (normalizedPath === '/privacy') {
+        return new Response(getPrivacyPage(), {
+          headers: { 'Content-Type': 'text/html' }
+        });
+      }
+
+      if (normalizedPath === '/faq') {
+        return new Response(getFAQPage(), {
+          headers: { 'Content-Type': 'text/html' }
+        });
+      }
+
+      if (normalizedPath === '/get-listed') {
+        return new Response(getGetListedPage(), {
+          headers: { 'Content-Type': 'text/html' }
+        });
       }
 
       // 404 for unmatched routes
