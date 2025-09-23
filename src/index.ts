@@ -5,6 +5,7 @@
 
 import { INDUSTRIES } from '../lib/data/industries';
 import { CITIES } from '../lib/data/cities';
+import { getBusinessesByCity } from '../lib/data/businesses';
 
 // Business interface matching D1 database schema
 interface Business {
@@ -45,28 +46,80 @@ interface BlogPost {
   published_at: string | null;
 }
 
-// Get businesses from D1 database
-async function getBusinessesFromD1(db: D1Database, citySlug: string, industrySlug: string, limit: number = 50): Promise<Business[]> {
-  // Normalize city slug to match database city names
-  const cityName = CITIES.find(c => c.slug === citySlug)?.name || citySlug;
-  
+// Convert TypeScript business data to D1 Business format
+function convertTSBusinessToD1(tsBusiness: any): Business {
+  // Map trade names to industry slugs
+  const tradeToIndustryMap: { [key: string]: string } = {
+    'Electrician': 'electricians',
+    'Plumber': 'plumbers',
+    'Roofer': 'roofers',
+    'General Contractor': 'general-contractors',
+    'Attorney': 'lawfirms',
+    'Real Estate Agent': 'real-estate'
+  };
+
+  const industrySlug = tradeToIndustryMap[tsBusiness.trade] || tsBusiness.trade.toLowerCase().replace(' ', '-');
+
+  return {
+    id: tsBusiness.id,
+    name: tsBusiness.name,
+    city: tsBusiness.address.city,
+    state: tsBusiness.address.state,
+    industry: industrySlug,
+    services: JSON.stringify(tsBusiness.services),
+    verified: tsBusiness.verified,
+    website: tsBusiness.website || null,
+    yearsInBusiness: tsBusiness.yearsInBusiness || null,
+    phone: tsBusiness.phone || null,
+    address: `${tsBusiness.address.street}, ${tsBusiness.address.city}, ${tsBusiness.address.state} ${tsBusiness.address.zipCode}`,
+    email: tsBusiness.email || null,
+    rating: tsBusiness.rating || null,
+    reviewCount: tsBusiness.reviewCount || null,
+    licenseNumber: tsBusiness.licenseNumber || null,
+    bbbRating: tsBusiness.bbbRating || null,
+    emergencyService: tsBusiness.emergencyService || false
+  };
+}
+
+// Get businesses with D1 + TypeScript fallback
+async function getBusinessesWithFallback(db: D1Database, citySlug: string, industrySlug: string, limit: number = 50): Promise<Business[]> {
+  let businesses: Business[] = [];
+
+  // First try D1 database
   try {
+    const cityName = CITIES.find(c => c.slug === citySlug)?.name || citySlug;
+    console.log(`Querying D1 for city: ${cityName}, industry: ${industrySlug}`);
+
     const stmt = db.prepare(`
-      SELECT * FROM businesses 
-      WHERE LOWER(city) = LOWER(?) 
-      AND LOWER(industry) = LOWER(?) 
+      SELECT * FROM businesses
+      WHERE LOWER(city) = LOWER(?)
+      AND LOWER(industry) = LOWER(?)
       AND verified = 1
-      ORDER BY rating DESC, reviewCount DESC, yearsInBusiness DESC
+      ORDER BY rating DESC NULLS LAST, reviewCount DESC NULLS LAST, yearsInBusiness DESC NULLS LAST
       LIMIT ?
     `);
-    
+
     const result = await stmt.bind(cityName, industrySlug, limit).all();
-    
-    return result.results as Business[];
+    businesses = result.results as Business[];
+
+    console.log(`D1 query returned ${businesses.length} businesses for ${cityName}/${industrySlug}`);
   } catch (error) {
-    console.error('Database query error:', error);
-    return [];
+    console.error('D1 database query error:', error);
   }
+
+  // If D1 returns no results, try TypeScript fallback data
+  if (businesses.length === 0) {
+    console.log(`No D1 results found, trying TypeScript fallback for ${citySlug}/${industrySlug}`);
+    try {
+      const tsBusinesses = await getBusinessesByCity(citySlug, industrySlug);
+      businesses = tsBusinesses.map(convertTSBusinessToD1);
+      console.log(`TypeScript fallback returned ${businesses.length} businesses`);
+    } catch (error) {
+      console.error('TypeScript fallback error:', error);
+    }
+  }
+
+  return businesses;
 }
 
 // Blog database functions
@@ -1782,9 +1835,9 @@ export default {
       const industry = INDUSTRIES.find(i => i.slug === industrySlug);
       
       if (city && industry) {
-        // Get businesses for this city/industry combination from D1 database
-        const businesses = await getBusinessesFromD1(env.DB, citySlug, industrySlug, 30);
-        
+        // Get businesses for this city/industry combination with D1 + fallback
+        const businesses = await getBusinessesWithFallback(env.DB, citySlug, industrySlug, 30);
+
         return new Response(getIndustryPage(city, industry, businesses), {
           headers: { 'Content-Type': 'text/html' }
         });
